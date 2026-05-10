@@ -33,33 +33,40 @@
                 radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%); 
         }
         .nav-link:hover { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
-        
-        /* Video Player Styles */
-        .video-container {
-            position: relative;
-            width: 100%;
-            background: #000;
-            border-radius: 1rem;
+
+        /* TikTok embed card */
+        .tiktok-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 1.25rem;
             overflow: hidden;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        .video-container video {
+        .tiktok-card:hover {
+            border-color: rgba(59,130,246,0.4);
+            transform: translateY(-2px);
+        }
+        .tiktok-embed-wrapper {
             width: 100%;
-            height: 100%;
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            min-height: 500px;
+            padding: 0;
         }
-        .video-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 1.5rem;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
+        .tiktok-embed-wrapper blockquote {
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
-        .video-container:hover .video-overlay {
-            transform: translateY(0);
+        /* Make TikTok embeds fill card */
+        .tiktok-embed-wrapper .tiktok-embed {
+            width: 100% !important;
         }
+
         .copy-notification {
             position: fixed;
             bottom: 2rem;
@@ -80,15 +87,31 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Download button pulse */
+        .download-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+        .download-btn:hover::after {
+            transform: translateX(100%);
+        }
     </style>
 </head>
 <body class="bg-mesh min-h-screen">
 
-    <!-- Copy Notification -->
     <div id="copyNotification" class="copy-notification">
         <div class="flex items-center gap-2">
             <i data-lucide="check-circle" class="w-5 h-5"></i>
-            <span>Video URL copied to clipboard!</span>
+            <span>Link copied!</span>
         </div>
     </div>
 
@@ -161,11 +184,12 @@
             <div class="flex border-b border-white/5 bg-white/[0.02]">
                 <button onclick="openTab(event, 'overview')" class="tab-btn active flex-1 py-6 font-bold text-xs uppercase tracking-[0.2em] border-b-2 border-blue-500 text-white transition">Overview</button>
                 <button onclick="openTab(event, 'showcase')" class="tab-btn flex-1 py-6 font-bold text-xs uppercase tracking-[0.2em] border-b-2 border-transparent text-gray-500 transition">Showcase</button>
-                <button onclick="openTab(event, 'downloads')" class="tab-btn flex-1 py-6 font-bold text-xs uppercase tracking-[0.2em] border-b-2 border-transparent text-gray-500 transition">Versions</button>
+                <button onclick="openTab(event, 'versionsTab')" class="tab-btn flex-1 py-6 font-bold text-xs uppercase tracking-[0.2em] border-b-2 border-transparent text-gray-500 transition">Versions</button>
             </div>
 
             <div class="p-8 md:p-16">
-                <div id="overview" class="tab-content active animate-in fade-in duration-500">
+                <!-- OVERVIEW TAB -->
+                <div id="overview" class="tab-content active">
                     <div class="grid md:grid-cols-2 gap-16 items-center">
                         <div>
                             <h3 class="text-3xl font-bold mb-6 italic">Performance meets <span class="text-blue-500">Security</span></h3>
@@ -198,22 +222,123 @@
                     </div>
                 </div>
 
-                <div id="showcase" class="tab-content animate-in fade-in slide-in-from-bottom-4">
-                    <div class="mb-8 text-center">
-                        <h3 class="text-2xl font-bold mb-2">Feature Videos</h3>
-                        <p class="text-gray-400 text-sm">See GFM in action with our latest feature demonstrations</p>
+                <!-- SHOWCASE TAB -->
+                <div id="showcase" class="tab-content">
+                    <div class="mb-10 text-center">
+                        <h3 class="text-2xl font-bold mb-2">Showcase Videos</h3>
+                        <p class="text-gray-400 text-sm">GFM in action — watch our latest clips on TikTok</p>
                     </div>
-                    <div id="video-showcase" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                        <!-- TikTok 1 -->
+                        <div class="tiktok-card">
+                            <div class="tiktok-embed-wrapper">
+                                <blockquote 
+                                    class="tiktok-embed" 
+                                    cite="https://www.tiktok.com/@glutenfarmmacro/video/7637500297639709974"
+                                    data-video-id="7637500297639709974"
+                                    style="max-width:100%;min-width:250px;">
+                                    <section>
+                                        <a target="_blank" href="https://www.tiktok.com/@glutenfarmmacro/video/7637500297639709974">
+                                            GFM Showcase #1
+                                        </a>
+                                    </section>
+                                </blockquote>
+                            </div>
+                            <div class="p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-blue-400"></i>
+                                    <span>GFM Demo</span>
+                                </div>
+                                <a href="https://www.tiktok.com/@glutenfarmmacro/video/7637500297639709974" target="_blank"
+                                   class="text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                    TikTok <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- TikTok 2 -->
+                        <div class="tiktok-card">
+                            <div class="tiktok-embed-wrapper">
+                                <blockquote 
+                                    class="tiktok-embed" 
+                                    cite="https://www.tiktok.com/@glutenfarmmacro/video/7632827876777200918"
+                                    data-video-id="7632827876777200918"
+                                    style="max-width:100%;min-width:250px;">
+                                    <section>
+                                        <a target="_blank" href="https://www.tiktok.com/@glutenfarmmacro/video/7632827876777200918">
+                                            GFM Showcase #2
+                                        </a>
+                                    </section>
+                                </blockquote>
+                            </div>
+                            <div class="p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-blue-400"></i>
+                                    <span>GFM Demo</span>
+                                </div>
+                                <a href="https://www.tiktok.com/@glutenfarmmacro/video/7632827876777200918" target="_blank"
+                                   class="text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                    TikTok <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- TikTok 3 -->
+                        <div class="tiktok-card">
+                            <div class="tiktok-embed-wrapper">
+                                <blockquote 
+                                    class="tiktok-embed" 
+                                    cite="https://www.tiktok.com/@glutenfarmmacro/video/7604174081591725334"
+                                    data-video-id="7604174081591725334"
+                                    style="max-width:100%;min-width:250px;">
+                                    <section>
+                                        <a target="_blank" href="https://www.tiktok.com/@glutenfarmmacro/video/7604174081591725334">
+                                            GFM Showcase #3
+                                        </a>
+                                    </section>
+                                </blockquote>
+                            </div>
+                            <div class="p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-blue-400"></i>
+                                    <span>GFM Demo</span>
+                                </div>
+                                <a href="https://www.tiktok.com/@glutenfarmmacro/video/7604174081591725334" target="_blank"
+                                   class="text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                    TikTok <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="text-center text-xs text-gray-600 mt-8">
+                        Videos werden von TikTok eingebettet — stelle sicher, dass TikTok in deinem Browser nicht blockiert ist.
+                    </p>
                 </div>
 
-                <div id="downloads" class="tab-content animate-in fade-in slide-in-from-bottom-4">
+                <!-- VERSIONS TAB -->
+                <div id="versionsTab" class="tab-content">
                     <div id="version-list" class="space-y-4"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-20 px-6 border-t border-white/5 mt-20">
+    <!-- SEPARATE DOWNLOADS SECTION (linked from nav + hero button) -->
+    <section id="downloads" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold mb-3">Download <span class="text-gradient">GFM</span></h2>
+                <p class="text-gray-400 text-sm">Choose your version and start farming smarter.</p>
+            </div>
+            <div id="download-list-section" class="space-y-4"></div>
+        </div>
+    </section>
+
+    <footer class="py-20 px-6 border-t border-white/5 mt-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
             <div class="text-left">
                 <div class="flex items-center gap-2 mb-4">
@@ -230,16 +355,16 @@
         </div>
     </footer>
 
+    <!-- TikTok Embed Script -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
+
     <script>
-        // --- STATISTICS COUNTER LOGIC ---
+        // --- COUNTER ---
         function startCounters() {
             const counters = document.querySelectorAll('.counter');
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
-                if (target === 0) {
-                    counter.innerText = "0";
-                    return;
-                }
+                if (target === 0) { counter.innerText = "0"; return; }
                 const speed = 200;
                 const updateCount = () => {
                     const count = +counter.innerText;
@@ -255,138 +380,20 @@
             });
         }
 
-        // --- VIDEO SHOWCASE DATA ---
-        const featureVideos = [
-            {
-                name: "Auto Sugarcane Farm",
-                description: "Fully automated sugarcane farming with advanced pathfinding and anti-detection",
-                videoUrl: "https://github.com/USERNAME/REPO/releases/download/v1.0.0/sugarcane-demo.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800"
-            },
-            {
-                name: "Smart Crop Harvesting",
-                description: "Intelligent crop detection and harvesting with human-like movement patterns",
-                videoUrl: "https://github.com/USERNAME/REPO/releases/download/v1.0.0/crop-harvest.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1550745679-33d011703482?q=80&w=800"
-            },
-            {
-                name: "Anti-Detection System",
-                description: "Advanced macro protection with randomized delays and movement simulation",
-                videoUrl: "https://github.com/USERNAME/REPO/releases/download/v1.0.0/anti-detection.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800"
-            },
-            {
-                name: "Multi-Server Support",
-                description: "Seamless compatibility across different Minecraft servers and configurations",
-                videoUrl: "https://github.com/USERNAME/REPO/releases/download/v1.0.0/multi-server.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=800"
-            }
-        ];
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const notification = document.getElementById('copyNotification');
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            });
-        }
-
-        function renderVideoShowcase() {
-            const container = document.getElementById('video-showcase');
-            container.innerHTML = featureVideos.map((video, index) => `
-                <div class="glass rounded-2xl border border-white/5 overflow-hidden hover:border-blue-500/30 transition group">
-                    <div class="video-container aspect-video">
-                        <video 
-                            id="video-${index}"
-                            class="w-full h-full object-cover"
-                            muted
-                            loop
-                            playsinline
-                            poster="${video.thumbnail}"
-                            onloadedmetadata="this.muted = true"
-                        >
-                            <source src="${video.videoUrl}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="video-overlay">
-                            <div class="flex items-center justify-between gap-4">
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-sm mb-1">${video.name}</h4>
-                                    <p class="text-xs text-gray-400">${video.description}</p>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button 
-                                        onclick="toggleVideo(${index})" 
-                                        class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition"
-                                        title="Play/Pause"
-                                    >
-                                        <i data-lucide="play" class="w-4 h-4 video-play-icon-${index}"></i>
-                                        <i data-lucide="pause" class="w-4 h-4 video-pause-icon-${index} hidden"></i>
-                                    </button>
-                                    <button 
-                                        onclick="copyToClipboard('${video.videoUrl}')" 
-                                        class="p-2 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition"
-                                        title="Copy Discord-ready URL"
-                                    >
-                                        <i data-lucide="copy" class="w-4 h-4 text-blue-400"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-white/[0.02]">
-                        <div class="flex items-center gap-2 text-xs">
-                            <div class="flex items-center gap-1 text-green-400">
-                                <i data-lucide="check-circle" class="w-3 h-3"></i>
-                                <span>Discord Compatible</span>
-                            </div>
-                            <span class="text-gray-600">•</span>
-                            <div class="flex items-center gap-1 text-gray-400">
-                                <i data-lucide="link" class="w-3 h-3"></i>
-                                <span>Direct .mp4 Link</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            lucide.createIcons();
-        }
-
-        function toggleVideo(index) {
-            const video = document.getElementById(`video-${index}`);
-            const playIcon = document.querySelector(`.video-play-icon-${index}`);
-            const pauseIcon = document.querySelector(`.video-pause-icon-${index}`);
-            
-            if (video.paused) {
-                video.play();
-                playIcon.classList.add('hidden');
-                pauseIcon.classList.remove('hidden');
-            } else {
-                video.pause();
-                playIcon.classList.remove('hidden');
-                pauseIcon.classList.add('hidden');
-            }
-            
-            lucide.createIcons();
-        }
-
         // --- VERSION DATA ---
         const gfmVersions = [
             {
                 version: "V0.1",
                 title: "Stable Release",
-                type: "stable", 
-                date: "05 10, 2026",
+                type: "stable",
+                date: "10 May, 2026",
                 changelog: "New Client",
-                url: "https://github.com/GlutenfreierKeks/GFM-WEBSITE/raw/main/gfm-recode-0.0.1.jar"
+                url: "https://github.com/GlutenfreierKeks/GFM-WEBSITE/raw/main/gfm_recode-0.0.1.jar"
             },
             {
                 version: "V1.1.2",
                 title: "Stable Release",
-                type: "stable", 
+                type: "stable",
                 date: "Jan 31, 2026",
                 changelog: "Added many new things",
                 url: "https://github.com/GlutenfreierKeks/glutenfarmmacroversion/raw/main/GlutenFarmMacro-1.1.2.jar"
@@ -394,7 +401,7 @@
             {
                 version: "V1.1.1",
                 title: "Stable Release",
-                type: "stable", 
+                type: "stable",
                 date: "Jan 31, 2026",
                 changelog: "Added many new things",
                 url: "https://github.com/GlutenfreierKeks/glutenfarmmacroversion/raw/main/GlutenFarmMacro-1.1.1.jar"
@@ -402,7 +409,7 @@
             {
                 version: "V1.1.0",
                 title: "Stable Release",
-                type: "stable", 
+                type: "stable",
                 date: "Jan 27, 2026",
                 changelog: "Added many new things",
                 url: "https://github.com/GlutenfreierKeks/glutenfarmmacroversion/raw/main/GlutenFarmMacro-1.1.0.jar"
@@ -410,7 +417,7 @@
             {
                 version: "V1.0.5",
                 title: "Stable Release",
-                type: "stable", 
+                type: "stable",
                 date: "Dec 25, 2025",
                 changelog: "Added many new things",
                 url: "https://github.com/GlutenfreierKeks/glutenfarmmacroversion/raw/main/GlutenFarmMacro-1.0.5.jar"
@@ -418,62 +425,82 @@
             {
                 version: "V1.0.0",
                 title: "Stable Release",
-                type: "stable", 
+                type: "stable",
                 date: "Dec 21, 2025",
                 changelog: "Optimized Sugarcane pathing, Anti-Lag fix for global servers.",
                 url: "https://github.com/GlutenfreierKeks/glutenfarmmacroversion/raw/main/GlutenFarmMacro-1.0.2.jar"
             }
         ];
 
-        function renderVersions() {
-            const container = document.getElementById('version-list');
-            container.innerHTML = gfmVersions.map(v => `
-                <div class="glass p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 hover:border-blue-500/30 transition">
+        function buildVersionHTML(v, index) {
+            const isFirst = index === 0;
+            return `
+                <div class="glass p-6 rounded-2xl border ${isFirst ? 'border-blue-500/40' : 'border-white/5'} flex flex-col md:flex-row justify-between items-center gap-6 hover:border-blue-500/40 transition">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl ${v.type === 'stable' ? 'bg-blue-500/10 text-blue-400' : 'bg-purple-500/10 text-purple-400'} flex items-center justify-center font-black text-lg italic border border-white/5">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-black text-lg italic border border-white/5">
                             ${v.version.split('.')[0]}
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-white">${v.title}</h4>
-                                ${v.type === 'stable' ? '<span class="text-[9px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-black tracking-tighter uppercase">RECOMMENDED</span>' : ''}
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h4 class="font-bold text-white">${v.title} — ${v.version}</h4>
+                                ${isFirst ? '<span class="text-[9px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-black tracking-tighter uppercase">LATEST</span>' : ''}
                             </div>
-                            <p class="text-xs text-gray-500">Version ${v.version} • ${v.date}</p>
+                            <p class="text-xs text-gray-500">${v.date}</p>
                         </div>
                     </div>
                     <div class="flex-1 px-4 hidden lg:block text-left">
                         <p class="text-[10px] text-gray-500 uppercase font-bold mb-1 tracking-widest">Update Notes</p>
                         <p class="text-xs text-gray-400 italic">"${v.changelog}"</p>
                     </div>
-                    <a href="${v.url}" class="w-full md:w-auto bg-white text-black px-8 py-3 rounded-xl font-bold text-sm hover:bg-blue-500 hover:text-white transition-all transform active:scale-95 shadow-xl">
-                        Download Now
+                    <a 
+                        href="${v.url}" 
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="download-btn w-full md:w-auto bg-white text-black px-8 py-3 rounded-xl font-bold text-sm hover:bg-blue-500 hover:text-white transition-all transform active:scale-95 shadow-xl flex items-center justify-center gap-2"
+                    >
+                        <i data-lucide="download" class="w-4 h-4"></i> Download
                     </a>
                 </div>
-            `).join('');
+            `;
+        }
+
+        function renderVersions() {
+            const html = gfmVersions.map((v, i) => buildVersionHTML(v, i)).join('');
+            // Tab version list
+            const tabContainer = document.getElementById('version-list');
+            if (tabContainer) tabContainer.innerHTML = html;
+            // Section version list
+            const sectionContainer = document.getElementById('download-list-section');
+            if (sectionContainer) sectionContainer.innerHTML = html;
+            lucide.createIcons();
         }
 
         function openTab(evt, tabName) {
             const contents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-            
+
             const btns = document.getElementsByClassName("tab-btn");
             for (let i = 0; i < btns.length; i++) {
                 btns[i].classList.remove("active", "border-blue-500", "text-white");
                 btns[i].classList.add("text-gray-500", "border-transparent");
             }
-            
+
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active", "text-white", "border-blue-500");
             evt.currentTarget.classList.remove("text-gray-500", "border-transparent");
+
+            // Re-trigger TikTok embed if switching to showcase
+            if (tabName === 'showcase' && window.tiktok) {
+                window.tiktok.reload();
+            }
         }
 
         window.onload = () => {
             renderVersions();
-            renderVideoShowcase();
             startCounters();
             lucide.createIcons();
         };
     </script>
 </body>
 </html>
-
